@@ -1,15 +1,22 @@
-name: CI/CD Pipeline
+name: CI/CD - FastAPI Docker Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # Trigger khi push vào nhánh main
+  workflow_dispatch:  # Cho phép chạy thủ công
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    env:
+      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout source code
+      uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -20,15 +27,25 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install pytest
 
-    - name: Test import
+    - name: Run FastAPI tests
+      run: |
+        export PYTHONPATH=.
+        pytest test/ --disable-warnings
+
+    - name: Run minimal import test
       run: python -c "import app.main"
 
+    - name: Set image name and tag
+      id: docker_meta
+      run: echo "IMAGE_NAME=$DOCKERHUB_USER/fastapi-model-serving:latest" >> $GITHUB_ENV
+
     - name: Build Docker image
-      run: docker build -t yourdockerhubuser/fastapi-model-serving .
+      run: docker build -t $IMAGE_NAME .
 
     - name: Login to DockerHub
-      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USER }}" --password-stdin
+      run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USER}" --password-stdin
 
     - name: Push Docker image
-      run: docker push yourdockerhubuser/fastapi-model-serving
+      run: docker push $IMAGE_NAME

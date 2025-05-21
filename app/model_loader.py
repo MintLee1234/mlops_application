@@ -1,4 +1,4 @@
-import mlflow.pyfunc
+import joblib
 import os
 import logging
 
@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def get_run_id():
-    with open('/home/minhle/mlops/last_best_run_id.txt') as f:
+    with open('../last_best_run_id.txt') as f:
         model_id = f.readlines()[-1].strip().split(' - ')[-1]
     return model_id
 
@@ -20,15 +20,12 @@ def get_model_path():
     """
     # TODO: sửa lại run_id này sau khi chọn model
 
-
     run_id = get_run_id()
 
-    relative_path1 = f"../../mlops/mlruns/614539332736825052/{run_id}/artifacts/model"
-    relative_path2 = f"../../mlops/mlruns/621368519697902338/{run_id}/artifacts/model"
-    
-    abs_path1 = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path1))
-    abs_path2 = os.path.abspath(os.path.join(os.path.dirname(__file__), relative_path2))
-    abs_path = abs_path1 if os.path.exists(abs_path1) else abs_path2
+    path1 = f"../model/LGBM/{run_id}/model.pkl"
+    path2 = f"../model/XGB/{run_id}/model.pkl"
+
+    abs_path = path1 if os.path.exists(path1) else path2
 
     return abs_path
 
@@ -39,7 +36,7 @@ def load_model():
     Trả về object model để sử dụng cho dự đoán.
     """
     model_path = get_model_path()
-    model = mlflow.pyfunc.load_model(model_path)
+    model = joblib.load(model_path)
     logger.info(f"Model đã được load từ {model_path}")
     return model
 
