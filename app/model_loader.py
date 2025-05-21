@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 CWD_PROJECT_ROOT = Path(os.getcwd())
 RUN_ID_FILE_PATH = CWD_PROJECT_ROOT / 'last_best_run_id.txt'
+MODEL_BASE_DIR = CWD_PROJECT_ROOT / 'model' 
 
 
 def get_run_id():
@@ -33,9 +34,10 @@ def get_model_path():
 
     run_id = get_run_id()
 
-    path1 = f"../model/LGBM/{run_id}/model.pkl"
-    path2 = f"../model/XGB/{run_id}/model.pkl"
-
+    path1 = f"LGBM/{run_id}/model.pkl"
+    path2 = f"XGB/{run_id}/model.pkl"
+    path1 = MODEL_BASE_DIR / path1
+    path2 = MODEL_BASE_DIR / path2
     abs_path = path1 if os.path.exists(path1) else path2
 
     return abs_path
