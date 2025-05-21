@@ -1,15 +1,26 @@
 import joblib
 import os
 import logging
+from pathlib import Path
 
 # Cấu hình logger để log lỗi nếu có
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+PROJECT_ROOT = Path(os.getcwd()).resolve().parent
+RUN_ID_FILE_PATH = PROJECT_ROOT / 'last_best_run_id.txt'
+
 
 def get_run_id():
-    with open('../last_best_run_id.txt') as f:
-        model_id = f.readlines()[-1].strip().split(' - ')[-1]
+    if not RUN_ID_FILE_PATH.is_file():
+        print(f"Debug: Attempting to read run_id from: {RUN_ID_FILE_PATH}")
+        raise FileNotFoundError(f"File not found: {RUN_ID_FILE_PATH}")
+    try:
+        with open(RUN_ID_FILE_PATH, 'r') as f:
+            model_id = f.readlines()[-1].strip().split(' - ')[-1]
+    except Exception as e:
+        print(f"Error reading or parsing run_id from {RUN_ID_FILE_PATH}: {e}")
+        raise
     return model_id
 
 
