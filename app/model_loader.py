@@ -7,8 +7,8 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-PROJECT_ROOT = Path(os.getcwd()).resolve().parent
-RUN_ID_FILE_PATH = PROJECT_ROOT / 'last_best_run_id.txt'
+CWD_PROJECT_ROOT = Path(os.getcwd())
+RUN_ID_FILE_PATH = CWD_PROJECT_ROOT / 'last_best_run_id.txt'
 
 
 def get_run_id():
