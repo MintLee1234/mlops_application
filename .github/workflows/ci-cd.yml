@@ -32,7 +32,8 @@ jobs:
       - name: Run tests with pytest
         run: |
           pip install pytest
-          pytest test/ --disable-warnings
+          PYTHONPATH=. pytest test/ --disable-warnings
+
 
       - name: Minimal import test
         run: |
