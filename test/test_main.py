@@ -22,7 +22,7 @@ def test_model_predict_directly():
 
     try:
         prediction = model.predict(input_data_2d)
-        assert prediction is not None 
+        assert prediction is not None
         print(f"DEBUG: Prediction result: {prediction}")
     except Exception as e:
         print(f"ERROR during model.predict: {e}")
