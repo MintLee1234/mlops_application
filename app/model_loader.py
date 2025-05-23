@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 CWD_PROJECT_ROOT = Path(os.getcwd())
 RUN_ID_FILE_PATH = CWD_PROJECT_ROOT / 'last_best_run_id.txt'
-MODEL_BASE_DIR = CWD_PROJECT_ROOT / 'model' 
+MODEL_BASE_DIR = CWD_PROJECT_ROOT / 'model'
 
 
 def get_run_id():
